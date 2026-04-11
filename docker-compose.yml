@@ -1,0 +1,154 @@
+# =============================================
+# Real-time Chat — Microservices MVP
+# docker-compose.yml
+# Khởi động toàn bộ hệ thống với 1 lệnh:
+#   docker-compose up --build
+# =============================================
+
+version: "3.8"
+
+services:
+  # ============================================
+  # INFRASTRUCTURE
+  # ============================================
+
+  # PostgreSQL — Auth DB + User Service DB + Notification DB
+  postgres:
+    image: postgres:16
+    container_name: rtchat-postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB — Chat Database
+  mongodb:
+    image: mongo:7
+    container_name: rtchat-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis — Message Broker + User Presence
+  redis:
+    image: redis:7-alpine
+    container_name: rtchat-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # MICROSERVICES
+  # ============================================
+
+  # Auth Service (FastAPI) — Port 8001
+  auth_service:
+    build: ./auth_service
+    container_name: rtchat-auth
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://admin:password@postgres:5432/auth_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET_KEY=SECRET_YOUR_TEAM_CHOSE
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # User Service (FastAPI) — Port 8002
+  user_service:
+    build: ./user_service
+    container_name: rtchat-user
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql://admin:password@postgres:5432/user_service_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET_KEY=SECRET_YOUR_TEAM_CHOSE
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Chat Service (Node.js + Socket.io) — Port 3002
+  chat_service:
+    build: ./chat-service
+    container_name: rtchat-chat
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - MONGODB_URI=mongodb://mongodb:27017/chatdb
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=SECRET_YOUR_TEAM_CHOSE
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Notification Service (FastAPI) — Port 8003
+  notification_service:
+    build: ./notification-service/backend
+    container_name: rtchat-notification
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://admin:password@postgres:5432/notification_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=SECRET_YOUR_TEAM_CHOSE
+      - JWT_ALGORITHM=HS256
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ============================================
+  # FRONTEND
+  # ============================================
+
+  # React Frontend (Vite) — Port 5173
+  frontend:
+    build: ./frontend
+    container_name: rtchat-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - auth_service
+      - user_service
+      - chat_service
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  mongodb_data:

@@ -4,8 +4,8 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     app_name: str = "notification-service"
     env: str = "dev"
-    database_url: str = "postgresql+psycopg2://postgres:postgres@postgres:5432/notification_db"
-    jwt_secret_key: str = "change-me"
+    database_url: str = "postgresql+psycopg2://admin:password@postgres:5432/notification_db"
+    jwt_secret_key: str = "SECRET_YOUR_TEAM_CHOSE"
     jwt_algorithm: str = "HS256"
     redis_url: str = "redis://redis:6379/0"
     redis_channels: str = "new_message,message_deleted,user_registered,password_reset,friend_request,friend_accepted"

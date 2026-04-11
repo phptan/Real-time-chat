@@ -1,7 +1,6 @@
 """
-User Service — Database Configuration
-Kết nối PostgreSQL qua SQLAlchemy.
-Sử dụng biến môi trường DATABASE_URL cho docker-compose.
+Auth Service — Database Configuration
+Kết nối PostgreSQL (auth_db) qua SQLAlchemy.
 """
 import os
 from sqlalchemy import create_engine
@@ -10,13 +9,13 @@ from models import Base
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://admin:password@postgres:5432/user_service_db"
+    "postgresql://admin:password@postgres:5432/auth_db"
 )
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Tự động tạo bảng user_profiles và friendships khi khởi động
+# Tự động tạo bảng auth_users khi khởi động
 Base.metadata.create_all(bind=engine)
 
 

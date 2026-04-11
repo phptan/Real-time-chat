@@ -1,0 +1,222 @@
+/* =========================================
+   LoginPage Styles
+   ========================================= */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 20% 50%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 50%, rgba(0, 206, 201, 0.06) 0%, transparent 50%),
+              var(--bg-primary);
+}
+
+/* === Floating orbs === */
+.login-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: float 8s ease-in-out infinite;
+}
+.login-bg-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: rgba(108, 92, 231, 0.12);
+  top: -100px;
+  left: -100px;
+}
+.login-bg-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: rgba(0, 206, 201, 0.1);
+  bottom: -80px;
+  right: -80px;
+  animation-delay: 2s;
+}
+.login-bg-orb-3 {
+  width: 200px;
+  height: 200px;
+  background: rgba(162, 155, 254, 0.08);
+  top: 50%;
+  left: 50%;
+  animation-delay: 4s;
+}
+
+/* === Container === */
+.login-container {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  min-height: 540px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--bg-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  position: relative;
+  z-index: 1;
+}
+
+/* === Branding Panel === */
+.login-branding {
+  flex: 1;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.15) 0%, rgba(0, 206, 201, 0.08) 100%);
+  border-right: 1px solid var(--border-color);
+}
+
+.login-logo {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background: var(--accent-gradient);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-glow);
+}
+.login-logo-icon {
+  font-size: 28px;
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.login-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.login-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.login-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.login-feature-icon {
+  font-size: 16px;
+}
+
+/* === Form Panel === */
+.login-form-panel {
+  flex: 1;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-form-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.login-form-desc {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.login-submit-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.btn-loading {
+  animation: pulse 1.5s infinite;
+}
+
+/* === Switch link === */
+.login-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 24px;
+}
+.login-switch-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.login-switch-btn {
+  background: none;
+  border: none;
+  color: var(--accent-primary-light);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: color var(--transition-fast);
+}
+.login-switch-btn:hover {
+  color: var(--accent-primary);
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    max-width: 440px;
+  }
+  .login-branding {
+    padding: 32px 28px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .login-form-panel {
+    padding: 32px 28px;
+  }
+  .login-features {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
