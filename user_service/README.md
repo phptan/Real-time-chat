@@ -90,3 +90,4 @@ Sau khi chạy Backend, truy cập tài liệu API tự động tại:
 > **Lưu ý quan trọng:** Ở lần chạy đầu tiên, để có dữ liệu demo (Thư, Trí, Long), hãy sử dụng Endpoint `POST /seed_test_data` trên Swagger UI để tự động nạp vào DB.
 
 ---
+
